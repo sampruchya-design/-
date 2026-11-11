@@ -181,11 +181,30 @@
 │   ├── ผังวงจร DC Strings, DC Combiner, Inverter, Solar DB, Smart Meter, MDB
 │   └── ตารางรับรองแบบวิศวกรรม (Engineering Title Block) พร้อมเลขที่ กว.
 │
-└── หน้า 5: รายการอุปกรณ์ (BOM) & เงื่อนไขการรับประกัน
-    ├── ตาราง Bill of Materials: แผง Tier 1, Inverter, โครงสร้าง, สายไฟ, ตู้ไฟ
-    ├── เงื่อนไขรับประกันงานติดตั้ง 2 ปี และประกันแผง 25-30 ปี
-    └── ช่องลงนามอนุมัติของผู้เสนอราคาและผู้ว่าจ้าง
-```
+└── หน้า 5: สรุปบัญชีแสดงปริมาณวัสดุและราคา (BOQ) & รายการอุปกรณ์
+    ├── ตารางสรุป 6 หมวดงาน: ค่าวัสดุ, ค่าแรง, ยอดรวมก่อนภาษี, VAT 7%, รวมสุทธิ
+    ├── รายการ Bill of Materials (BOM) & ระยะเวลารับประกันของแผงและ Inverter
+    ├── มาตรฐานวิศวกรรม วสท. 022013-63 & รับประกันการรั่วซึม 2 ปี
+    └── ช่องลงนามอนุมัติของผู้เสนอราคา (วิศวกร กว.) และผู้ว่าจ้าง
+
+---
+
+## 📊 ระบบถอดแบบ BOQ & ประมาณการราคา (Bill of Quantities)
+
+ระบบถอดแบบปริมาณวัสดุ อุปกรณ์ไฟฟ้า ค่าแรงงาน และค่าธรรมเนียมวิศวกรรมอัตโนมัติตามขนาดโครงการจริง:
+1. **หมวดที่ 1: งานแผงเซลล์แสงอาทิตย์และอุปกรณ์หลัก** — แผง Tier 1 N-Type TOPCon, Grid-Tied Inverter, Smart Power Sensor Zero Export, WiFi Monitoring Dongle
+2. **หมวดที่ 2: งานโครงสร้างจับยึด (Mounting)** — รางอลูมิเนียม AL6005-T5, Roof Hooks (CPAC / Kliplok ไม่เจาะหลังคา / L-Feet / Tilt Legs), Mid Clamps, End Clamps
+3. **หมวดที่ 3: งานระบบไฟฟ้ากระแสตรง (DC System)** — ตู้ DC Combiner Box IP65, DC Fuse gPV 1000V/1500V, DC Isolator, DC SPD Type II, สาย Solar Cable PV1-F ทน UV, ข้อต่อ MC4 IP68, ท่อร้อยสาย EMT/HDPE
+4. **หมวดที่ 4: งานระบบไฟฟ้ากระแสสลับ (AC System)** — ตู้ AC Solar Sub-DB, เซอร์กิตเบรกเกอร์ MCB/MCCB, RCBO 30mA กันไฟรั่ว, AC SPD Type II, สายไฟ AC THW/XLPE
+5. **หมวดที่ 5: งานระบบต่อลงดินและความปลอดภัย (Grounding)** — แท่งหลักดิน Copper Bonded 5/8" x 2.4m, บ่อ Ground Pit, สายดิน Bare Copper, Grounding Clips
+6. **หมวดที่ 6: งานบริการวิศวกรรม ติดตั้ง และขออนุญาต** — ค่าแรงช่างติดตั้งโครงสร้าง, ค่าแรงช่างไฟฟ้า, การทดสอบระบบ Commissioning, ค่าดำเนินการยื่นขออนุญาตขนานไฟ MEA/PEA & กกพ., ค่าจัดทำแบบและวิศวกร กว. ลงนามรับรอง
+
+### ฟังก์ชันพิเศษของระบบ BOQ:
+- **แก้ไขราคาและจำนวนได้อิสระ (Inline Editing):** ปรับราคาต่อหน่วยของวัสดุและค่าแรงได้แบบ Real-time
+- **เพิ่มรายการวัสดุใหม่ได้เอง (Add Custom Item):** เพิ่มอุปกรณ์พิเศษ เช่น กล้องวงจรปิด Solar CCTV, โครงสร้างหลังคาเสริม
+- **ส่งออกไฟล์ Excel (CSV):** มี UTF-8 BOM รองรับการเปิดใน Microsoft Excel ภาษาไทย 100% ตัวอักษรไม่เพี้ยน
+- **พิมพ์ตาราง BOQ ออกเป็น PDF:** จัดหน้าพิมพ์พร้อมส่วนลงนามวิศวกรและลูกค้า
+- **เชื่อมโยงราคาสู่เล่ม Proposal ทันที:** กดปุ่มเดียวเพื่ออัปเดตมูลค่าโครงการในเล่มเสนอราคาและการคำนวณคืนทุน ROI
 
 ---
 
@@ -203,11 +222,12 @@ solarpro-studio/
 │   ├── App.tsx                          # Main Container, Tab Router & Guide Modal
 │   ├── index.css                        # Tailwind CSS 4 & Media Print Rules สำหรับ A4
 │   ├── types/
-│   │   └── solar.ts                     # Data Models (Panels, Inverters, Building, SLD)
+│   │   └── solar.ts                     # Data Models (Panels, Inverters, CombinerBox, BOQ)
 │   ├── data/
 │   │   └── solarEquipment.ts            # ข้อมูลแผง Tier 1, Inverter, แบตเตอรี่, พิกัดรังสีแดดในไทย
 │   ├── utils/
-│   │   └── solarCalculations.ts         # อัลกอริทึมมุมแดด, PVsyst Loss Engine, และการเงิน
+│   │   ├── solarCalculations.ts         # อัลกอริทึมมุมแดด, PVsyst Loss Engine, และการเงิน
+│   │   └── boqGenerator.ts              # สูตรถอดแบบปริมาณวัสดุ BOQ & ส่งออก Excel CSV
 │   └── components/
 │       ├── HeaderNav.tsx                # แถบเมนูด้านบน สลับแท็บ และปุ่มพิมพ์ Proposal
 │       ├── 3d/
@@ -218,8 +238,10 @@ solarpro-studio/
 │       │   └── SingleLineDiagram.tsx    # SVG Single Line Diagram มาตรฐาน กฟน./กฟภ.
 │       ├── pvsyst/
 │       │   └── PVsystShadingReport.tsx  # รายงานกราฟแท่งและ Loss Waterfall สไตล์ PVsyst
+│       ├── boq/
+│       │   └── SolarBoqView.tsx         # หน้าจอถอดแบบ BOQ คำนวณราคาและส่งออก Excel
 │       ├── wizard/
-│       │   └── ProjectStepWizard.tsx    # วิซาร์ด 4 ขั้นตอนการทำงาน
+│       │   └── ProjectStepWizard.tsx    # วิซาร์ด 4 ขั้นตอนการทำงาน & DIY สเปกอุปกรณ์
 │       └── proposal/
 │           └── ExecutiveProposal.tsx    # เล่ม Proposal เสนองาน 5 หน้า พร้อมพิมพ์ PDF
 ```

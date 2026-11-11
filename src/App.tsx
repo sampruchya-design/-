@@ -9,8 +9,9 @@ import { SOLAR_PANELS, INVERTERS, THAILAND_LOCATIONS, DEFAULT_PROJECT_PRESETS, D
 import { HeaderNav, ActiveTab } from './components/HeaderNav';
 import { SolarScene3D } from './components/3d/SolarScene3D';
 import { SolarCadView2D } from './components/2d/SolarCadView2D';
-import { SingleLineDiagram } from './components/sld/SingleLineDiagram';
 import { PVsystShadingReport } from './components/pvsyst/PVsystShadingReport';
+import { SingleLineDiagram } from './components/sld/SingleLineDiagram';
+import { SolarBoqView } from './components/boq/SolarBoqView';
 import { ExecutiveProposal } from './components/proposal/ExecutiveProposal';
 import { ProjectStepWizard } from './components/wizard/ProjectStepWizard';
 import { Box, Layers, Sun, Zap, FileText, Settings, Sparkles, CheckCircle2, ChevronRight, Ruler, Eye } from 'lucide-react';
@@ -272,7 +273,20 @@ export default function App() {
         )}
 
         {/* ------------------------------------------------------------- */}
-        {/* TAB 4: EXECUTIVE PROPOSAL BOOK */}
+        {/* TAB 4: BOQ (BILL OF QUANTITIES) ถอดแบบปริมาณและราคา */}
+        {/* ------------------------------------------------------------- */}
+        {activeTab === 'boq' && (
+          <div className="space-y-6">
+            <SolarBoqView
+              project={project}
+              onUpdateProject={setProject}
+              onNavigateToProposal={() => setActiveTab('proposal')}
+            />
+          </div>
+        )}
+
+        {/* ------------------------------------------------------------- */}
+        {/* TAB 5: EXECUTIVE PROPOSAL BOOK */}
         {/* ------------------------------------------------------------- */}
         {activeTab === 'proposal' && (
           <div className="space-y-6">
@@ -381,6 +395,16 @@ export default function App() {
 
               <div className="flex gap-3 p-3 bg-slate-950/80 border border-slate-800 rounded-xl">
                 <span className="w-6 h-6 rounded-full bg-amber-500 text-slate-950 font-bold flex items-center justify-center shrink-0">5</span>
+                <div>
+                  <span className="font-bold text-amber-400 text-sm block">ถอดแบบปริมาณและราคา (BOQ Takeoff) & ส่งออก Excel</span>
+                  <p className="text-slate-300 mt-1">
+                    ในแท็บ "ถอดแบบ BOQ" ระบบจะคำนวณจำนวนแผง, อุปกรณ์จับยึด (Clamps/Hooks/Rails), ตู้ DC/AC, สายไฟ, หลักดิน, และค่าแรงงานขออนุญาตให้อัตโนมัติ สามารถแก้ราคาและกดดาวน์โหลดไฟล์ Excel (CSV) ได้ทันที
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-3 p-3 bg-slate-950/80 border border-slate-800 rounded-xl">
+                <span className="w-6 h-6 rounded-full bg-amber-500 text-slate-950 font-bold flex items-center justify-center shrink-0">6</span>
                 <div>
                   <span className="font-bold text-amber-400 text-sm block">บันทึกภาพ 3D และพิมพ์เล่ม Proposal เสนองาน</span>
                   <p className="text-slate-300 mt-1">

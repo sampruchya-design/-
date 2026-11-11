@@ -1,8 +1,8 @@
 import React from 'react';
 import { ProjectData } from '../types/solar';
-import { Sun, Box, Zap, FileText, Settings, Printer, Download, Sparkles } from 'lucide-react';
+import { Sun, Box, Zap, FileText, Settings, Printer, Download, Sparkles, FileSpreadsheet } from 'lucide-react';
 
-export type ActiveTab = 'design' | 'pvsyst' | 'sld' | 'proposal' | 'wizard';
+export type ActiveTab = 'design' | 'pvsyst' | 'sld' | 'boq' | 'proposal' | 'wizard';
 
 interface HeaderNavProps {
   activeTab: ActiveTab;
@@ -24,6 +24,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
     { id: 'design' as ActiveTab, label: 'โมเดล 2D / 3D CAD', icon: Box, badge: 'หน้างานจริง' },
     { id: 'pvsyst' as ActiveTab, label: '3D Shading & PVsyst', icon: Sun, badge: 'จำลองเงา' },
     { id: 'sld' as ActiveTab, label: 'Single Line Diagram', icon: Zap, badge: 'กฟน./กฟภ.' },
+    { id: 'boq' as ActiveTab, label: 'ถอดแบบ BOQ', icon: FileSpreadsheet, badge: 'คิดราคาวัสดุ' },
     { id: 'proposal' as ActiveTab, label: 'เล่ม Proposal เสนองาน', icon: FileText, badge: 'เสนอลูกค้า' },
     { id: 'wizard' as ActiveTab, label: 'ข้อมูล 4 ขั้นตอน', icon: Settings, badge: 'ตั้งค่า' }
   ];

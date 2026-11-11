@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { ProjectData, PVsystYieldSummary } from '../../types/solar';
 import { calculatePVsystYield, formatCurrency, MONTH_NAMES_FULL_TH } from '../../utils/solarCalculations';
+import { generateDefaultBoq, calculateBoqSummary } from '../../utils/boqGenerator';
 import { SingleLineDiagram } from '../sld/SingleLineDiagram';
-import { Printer, Download, Award, ShieldCheck, Sun, CheckCircle, FileText, Building2, Phone, Mail, Calendar, User, Zap, Leaf } from 'lucide-react';
+import { Printer, Download, Award, ShieldCheck, Sun, CheckCircle, FileText, Building2, Phone, Mail, Calendar, User, Zap, Leaf, FileSpreadsheet } from 'lucide-react';
 
 interface ExecutiveProposalProps {
   project: ProjectData;
@@ -31,6 +32,11 @@ export const ExecutiveProposal: React.FC<ExecutiveProposalProps> = ({ project, c
       cumulativeCashflow: Math.round(cumulativeCashflow)
     };
   });
+
+  const boqItems = project.boqItems && project.boqItems.length > 0
+    ? project.boqItems
+    : generateDefaultBoq(project);
+  const boqSummary = calculateBoqSummary(boqItems, Number(totalKwp));
 
   const total25YearSavings = cashflowTable[24].cumulativeCashflow + project.financial.systemCostThb;
 
@@ -387,20 +393,74 @@ export const ExecutiveProposal: React.FC<ExecutiveProposalProps> = ({ project, c
         </div>
 
         {/* ------------------------------------------------------------------ */}
-        {/* PAGE 5: BILL OF MATERIALS (BOM) & WARRANTY CERTIFICATE */}
+        {/* PAGE 5: BOQ TAKEOFF SUMMARY, BILL OF MATERIALS & WARRANTY */}
         {/* ------------------------------------------------------------------ */}
         <div className="proposal-page bg-slate-900 text-white rounded-2xl border border-slate-800 p-10 min-h-[1050px] flex flex-col justify-between shadow-2xl">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+          <div className="space-y-5">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-amber-400" />
-                4. รายการอุปกรณ์มาตรฐานและเอกสารรับประกัน (Bill of Materials & Warranty)
+                4. สรุปบัญชีแสดงปริมาณวัสดุและราคา (BOQ Takeoff) & รายการอุปกรณ์
               </h2>
               <span className="text-xs text-slate-400 font-mono">หน้า 5 / 5</span>
             </div>
 
+            {/* Official BOQ 6-Category Summary Takeoff Table */}
+            <div className="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden shadow">
+              <div className="bg-slate-850 px-3 py-2 border-b border-slate-800 flex items-center justify-between text-xs font-semibold">
+                <span className="text-amber-400 flex items-center gap-1.5">
+                  <FileSpreadsheet className="w-3.5 h-3.5" />
+                  สรุปมูลค่าโครงการแยกตามหมวดงานวิศวกรรม (BOQ Categories Summary)
+                </span>
+                <span className="text-slate-400 font-mono text-[11px]">
+                  ขนาด {totalKwp} kWp • เฉลี่ย {boqSummary.costPerWp} บ./วัตต์
+                </span>
+              </div>
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-900 text-slate-300 text-[11px]">
+                  <tr>
+                    <th className="py-2 px-3">หมวดงาน (Work Category)</th>
+                    <th className="py-2 px-3 text-right">รวมค่าวัสดุ (บาท)</th>
+                    <th className="py-2 px-3 text-right">รวมค่าแรง (บาท)</th>
+                    <th className="py-2 px-3 text-right">รวมเป็นเงิน (บาท)</th>
+                    <th className="py-2 px-3 text-center">สัดส่วน</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/60 text-slate-300">
+                  {boqSummary.categoryBreakdown.map((cat, idx) => (
+                    <tr key={idx} className="hover:bg-slate-900/40">
+                      <td className="py-2 px-3 font-medium text-white">{cat.category}</td>
+                      <td className="py-2 px-3 text-right font-mono">{formatCurrency(cat.materialTotal)}</td>
+                      <td className="py-2 px-3 text-right font-mono text-emerald-400">{formatCurrency(cat.laborTotal)}</td>
+                      <td className="py-2 px-3 text-right font-mono font-bold text-amber-300">{formatCurrency(cat.grandTotal)}</td>
+                      <td className="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">{cat.percentage}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot className="bg-slate-900/90 border-t border-slate-700 font-bold text-xs divide-y divide-slate-800/80">
+                  <tr>
+                    <td className="py-2 px-3 text-slate-300">รวมเงินค่าวัสดุและค่าแรงก่อนภาษี (Subtotal):</td>
+                    <td className="py-2 px-3 text-right font-mono text-white">{formatCurrency(boqSummary.totalMaterial)}</td>
+                    <td className="py-2 px-3 text-right font-mono text-emerald-400">{formatCurrency(boqSummary.totalLabor)}</td>
+                    <td colSpan={2} className="py-2 px-3 text-right font-mono text-amber-300 text-sm">{formatCurrency(boqSummary.subtotal)} บาท</td>
+                  </tr>
+                  <tr>
+                    <td colSpan={3} className="py-1.5 px-3 text-slate-400 text-right">ภาษีมูลค่าเพิ่ม (VAT 7%):</td>
+                    <td colSpan={2} className="py-1.5 px-3 text-right font-mono text-slate-300">{formatCurrency(boqSummary.vat7Percent)} บาท</td>
+                  </tr>
+                  <tr className="bg-amber-500/10 text-amber-400">
+                    <td colSpan={3} className="py-2 px-3 font-extrabold text-white">รวมราคาสุทธิตลอดโครงการ (Grand Total):</td>
+                    <td colSpan={2} className="py-2 px-3 text-right font-mono font-black text-base text-amber-400">{formatCurrency(boqSummary.grandTotal)} บาท</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
             {/* Bill of Materials Table */}
             <div className="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden shadow">
+              <div className="bg-slate-850 px-3 py-1.5 border-b border-slate-800 text-xs font-semibold text-slate-300">
+                รายการสเปกอุปกรณ์หลัก (Equipment Specifications & Warranties)
+              </div>
               <table className="w-full text-left text-xs">
                 <thead className="bg-slate-800/80 text-slate-300">
                   <tr>

@@ -124,6 +124,29 @@ export interface CombinerBoxSpec {
   zeroExportMeterModel: string; // e.g. "DTSU666-H"
 }
 
+export interface BoqItem {
+  id: string;
+  category: 
+    | '1. งานแผงเซลล์แสงอาทิตย์และอุปกรณ์หลัก'
+    | '2. งานโครงสร้างจับยึดแผงโซลาร์เซลล์ (Mounting)'
+    | '3. งานระบบไฟฟ้ากระแสตรง (DC Electrical & Protection)'
+    | '4. งานระบบไฟฟ้ากระแสสลับ (AC Electrical & Grid Connection)'
+    | '5. งานระบบต่อลงดินและความปลอดภัย (Grounding & Safety)'
+    | '6. งานบริการวิศวกรรม ติดตั้ง และขออนุญาตขนานไฟ';
+  itemCode: string;
+  description: string;
+  brandModel: string;
+  quantity: number;
+  unit: string;
+  materialUnitPrice: number;
+  laborUnitPrice: number;
+  materialTotal: number;
+  laborTotal: number;
+  totalPrice: number;
+  notes?: string;
+  isCustom?: boolean;
+}
+
 export interface ProjectData {
   id: string;
   projectName: string;
@@ -145,6 +168,7 @@ export interface ProjectData {
   combinerBox: CombinerBoxSpec;
   layout: ArrayLayoutConfig;
   financial: FinancialConfig;
+  boqItems?: BoqItem[];
   notes: string;
 }
 

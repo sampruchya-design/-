@@ -9,7 +9,7 @@ interface ProjectStepWizardProps {
   onStepChange: (step: number) => void;
   onUpdateProject: (updated: ProjectData) => void;
   onApplyPreset: (presetKey: string) => void;
-  onNavigateTab: (tab: 'design' | 'pvsyst' | 'sld' | 'proposal') => void;
+  onNavigateTab: (tab: 'design' | 'pvsyst' | 'sld' | 'boq' | 'proposal') => void;
 }
 
 export const ProjectStepWizard: React.FC<ProjectStepWizardProps> = ({
@@ -1412,10 +1412,10 @@ export const ProjectStepWizard: React.FC<ProjectStepWizardProps> = ({
             </div>
           </div>
 
-          {/* Quick Direct Actions to Design, Simulation, SLD, Proposal */}
+          {/* Quick Direct Actions to Design, Simulation, SLD, BOQ, Proposal */}
           <div className="space-y-3">
             <span className="text-xs font-semibold text-slate-300">เลือกดูผลลัพธ์การออกแบบ:</span>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               <button
                 onClick={() => onNavigateTab('design')}
                 className="p-3.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl border border-slate-700 text-left transition-colors flex flex-col justify-between"
@@ -1438,6 +1438,14 @@ export const ProjectStepWizard: React.FC<ProjectStepWizardProps> = ({
               >
                 <div className="text-amber-400 font-bold text-xs">Single Line Diagram</div>
                 <div className="text-slate-400 text-[11px] mt-1">แบบไดอะแกรมวิศวกรรมไฟฟ้า</div>
+              </button>
+
+              <button
+                onClick={() => onNavigateTab('boq')}
+                className="p-3.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl border border-emerald-500/40 text-left transition-colors flex flex-col justify-between"
+              >
+                <div className="text-emerald-400 font-bold text-xs">ถอดแบบ BOQ & ราคา</div>
+                <div className="text-slate-400 text-[11px] mt-1">บัญชีปริมาณวัสดุ & Excel</div>
               </button>
 
               <button
