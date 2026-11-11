@@ -429,7 +429,7 @@ export const ExecutiveProposal: React.FC<ExecutiveProposalProps> = ({ project, c
                   <tr>
                     <td className="py-2.5 px-3 font-mono">3</td>
                     <td className="py-2.5 px-3 font-semibold text-white">ระบบกันย้อน Smart Power Sensor (Zero Export)</td>
-                    <td className="py-2.5 px-3">DTSU666-H พร้อมหม้อแปลงกระแส CT</td>
+                    <td className="py-2.5 px-3">{project.combinerBox?.zeroExportMeterModel || 'DTSU666-H พร้อมหม้อแปลงกระแส CT'}</td>
                     <td className="py-2.5 px-3 text-center font-mono">1 ชุด</td>
                     <td className="py-2.5 px-3">2 ปี</td>
                   </tr>
@@ -443,14 +443,18 @@ export const ExecutiveProposal: React.FC<ExecutiveProposalProps> = ({ project, c
                   <tr>
                     <td className="py-2.5 px-3 font-mono">5</td>
                     <td className="py-2.5 px-3 font-semibold text-white">ตู้ควบคุมไฟฟ้ากระแสตรง/สลับ (DC/AC Combiner Box)</td>
-                    <td className="py-2.5 px-3">SPD Type II + DC Isolator + MCB/RCBO</td>
+                    <td className="py-2.5 px-3">
+                      DC {project.combinerBox?.dcIsolatorRatingA || 32}A, Fuse {project.combinerBox?.dcFuseRatingA || 15}A + AC {project.combinerBox?.acBreakerType || 'MCB'} {project.combinerBox?.acBreakerRatingA || 32}A ({project.combinerBox?.acBreakerPoles || '2P'}) + SPD {project.combinerBox?.dcSpdType || 'Type 2'}
+                    </td>
                     <td className="py-2.5 px-3 text-center font-mono">1 ตู้</td>
                     <td className="py-2.5 px-3">2 ปี</td>
                   </tr>
                   <tr>
                     <td className="py-2.5 px-3 font-mono">6</td>
-                    <td className="py-2.5 px-3 font-semibold text-white">สายไฟฟ้าพลังงานแสงอาทิตย์ PV1-F & ท่อร้อยสาย</td>
-                    <td className="py-2.5 px-3">Solar Cable 1x4.0/6.0 mm² ทนความร้อนสูง</td>
+                    <td className="py-2.5 px-3 font-semibold text-white">สายไฟฟ้าโซลาร์เซลล์และสายส่งไฟฟ้ากระแสสลับ</td>
+                    <td className="py-2.5 px-3">
+                      DC {project.combinerBox?.dcCableSizeMm2 || '1x4.0 mm²'} PV1-F & AC {project.combinerBox?.acCableSpec || 'Cu/XLPE'}
+                    </td>
                     <td className="py-2.5 px-3 text-center font-mono">ตามหน้างาน</td>
                     <td className="py-2.5 px-3">25 ปี</td>
                   </tr>

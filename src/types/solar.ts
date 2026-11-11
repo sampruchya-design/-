@@ -101,6 +101,29 @@ export interface FinancialConfig {
   omCostAnnualThb: number;
 }
 
+export interface CombinerBoxSpec {
+  dcFuseRatingA: number; // e.g. 15, 20, 25, 30, 32 A
+  dcFuseVoltageV: number; // e.g. 1000, 1500 V
+  dcIsolatorRatingA: number; // e.g. 25, 32, 40, 63 A
+  dcIsolatorVoltageV: number; // e.g. 1000, 1500 V
+  dcSpdType: string; // e.g. "Type 2"
+  dcSpdInKa: number; // e.g. 20 kA
+  dcSpdImaxKa: number; // e.g. 40 kA
+  dcSpdUpKv: number; // e.g. 1.5 kV
+  dcCableSizeMm2: string; // e.g. "1x4.0 mm²"
+
+  acBreakerType: string; // "MCB" | "MCCB"
+  acBreakerRatingA: number; // e.g. 16, 20, 25, 32, 40, 63 A
+  acBreakerPoles: string; // "2P" | "3P" | "4P"
+  acRcboRatingMa: number; // e.g. 30, 100, 300 mA
+  acSpdType: string; // e.g. "Type 2"
+  acSpdInKa: number; // e.g. 20 kA
+  acSpdImaxKa: number; // e.g. 40 kA
+  acSpdUcV: number; // e.g. 385V
+  acCableSpec: string; // e.g. "4x6.0 mm²"
+  zeroExportMeterModel: string; // e.g. "DTSU666-H"
+}
+
 export interface ProjectData {
   id: string;
   projectName: string;
@@ -119,6 +142,7 @@ export interface ProjectData {
   selectedPanel: SolarPanelSpec;
   selectedInverter: InverterSpec;
   selectedBattery?: BatterySpec;
+  combinerBox: CombinerBoxSpec;
   layout: ArrayLayoutConfig;
   financial: FinancialConfig;
   notes: string;

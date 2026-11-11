@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { ProjectData } from './types/solar';
-import { SOLAR_PANELS, INVERTERS, THAILAND_LOCATIONS, DEFAULT_PROJECT_PRESETS } from './data/solarEquipment';
+import { SOLAR_PANELS, INVERTERS, THAILAND_LOCATIONS, DEFAULT_PROJECT_PRESETS, DEFAULT_COMBINER_BOX } from './data/solarEquipment';
 import { HeaderNav, ActiveTab } from './components/HeaderNav';
 import { SolarScene3D } from './components/3d/SolarScene3D';
 import { SolarCadView2D } from './components/2d/SolarCadView2D';
@@ -47,6 +47,12 @@ export default function App() {
     },
     selectedPanel: SOLAR_PANELS[0], // Jinko 585W TOPCon
     selectedInverter: INVERTERS[0], // Huawei 5kW 1-Phase
+    combinerBox: {
+      ...DEFAULT_COMBINER_BOX,
+      acBreakerPoles: '2P',
+      acBreakerRatingA: 32,
+      acCableSpec: '3x6.0 mm² Cu/XLPE'
+    },
     layout: {
       modulesPerRow: 3,
       rows: 3,

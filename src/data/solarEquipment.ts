@@ -268,6 +268,28 @@ export const THAILAND_LOCATIONS: LocationData[] = [
   }
 ];
 
+export const DEFAULT_COMBINER_BOX = {
+  dcFuseRatingA: 15,
+  dcFuseVoltageV: 1000,
+  dcIsolatorRatingA: 32,
+  dcIsolatorVoltageV: 1000,
+  dcSpdType: 'Type 2 (DC)',
+  dcSpdInKa: 20,
+  dcSpdImaxKa: 40,
+  dcSpdUpKv: 1.5,
+  dcCableSizeMm2: '1x4.0 mm²',
+  acBreakerType: 'MCB',
+  acBreakerRatingA: 32,
+  acBreakerPoles: '2P',
+  acRcboRatingMa: 30,
+  acSpdType: 'Type 2 (AC)',
+  acSpdInKa: 20,
+  acSpdImaxKa: 40,
+  acSpdUcV: 385,
+  acCableSpec: '3x6.0 mm² Cu/XLPE',
+  zeroExportMeterModel: 'DTSU666-H (Smart Power Sensor with CTs)'
+};
+
 export const DEFAULT_PROJECT_PRESETS: { [key: string]: Partial<ProjectData> } = {
   residential5kwp: {
     projectName: 'โครงการติดตั้งระบบโซลาร์เซลล์ บ้านพักอาศัย (Residential 5.26 kWp)',
@@ -290,6 +312,12 @@ export const DEFAULT_PROJECT_PRESETS: { [key: string]: Partial<ProjectData> } = 
       obstacleType: 'AC Units',
       treeDistanceM: 8,
       treeHeightM: 6
+    },
+    combinerBox: {
+      ...DEFAULT_COMBINER_BOX,
+      acBreakerPoles: '2P',
+      acBreakerRatingA: 32,
+      acCableSpec: '3x6.0 mm² Cu/XLPE'
     },
     layout: {
       modulesPerRow: 3,
@@ -335,6 +363,14 @@ export const DEFAULT_PROJECT_PRESETS: { [key: string]: Partial<ProjectData> } = 
       treeDistanceM: 10,
       treeHeightM: 8
     },
+    combinerBox: {
+      ...DEFAULT_COMBINER_BOX,
+      dcFuseRatingA: 20,
+      acBreakerPoles: '3P',
+      acBreakerRatingA: 25,
+      acCableSpec: '4x6.0 mm² Cu/XLPE',
+      zeroExportMeterModel: 'DTSU666-H (3-Phase)'
+    },
     layout: {
       modulesPerRow: 6,
       rows: 3,
@@ -378,6 +414,14 @@ export const DEFAULT_PROJECT_PRESETS: { [key: string]: Partial<ProjectData> } = 
       obstacleType: 'Water Tank',
       treeDistanceM: 12,
       treeHeightM: 5
+    },
+    combinerBox: {
+      ...DEFAULT_COMBINER_BOX,
+      dcFuseRatingA: 20,
+      acBreakerPoles: '3P',
+      acBreakerRatingA: 32,
+      acCableSpec: '4x10.0 mm² Cu/XLPE',
+      zeroExportMeterModel: 'DTSU666-H (3-Phase with Backup CT)'
     },
     layout: {
       modulesPerRow: 7,

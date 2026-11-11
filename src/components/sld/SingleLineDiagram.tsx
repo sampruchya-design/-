@@ -12,6 +12,7 @@ export const SingleLineDiagram: React.FC<SingleLineDiagramProps> = ({ project, i
 
   const p = project.selectedPanel;
   const inv = project.selectedInverter;
+  const cb = project.combinerBox;
   const l = project.layout;
   const is3Phase = project.phase.includes('3-Phase');
   const isHybrid = project.systemType.includes('Hybrid');
@@ -30,7 +31,9 @@ export const SingleLineDiagram: React.FC<SingleLineDiagramProps> = ({ project, i
     ? (inv.ratedPowerKw * 1000) / (Math.sqrt(3) * 380 * 0.95)
     : (inv.ratedPowerKw * 1000) / (220 * 0.95);
 
-  const breakerRatingA = Math.ceil((acCurrentA * 1.25) / 5) * 5; // e.g. 16A, 20A, 25A, 32A, 40A, 63A
+  const calculatedBreakerA = Math.ceil((acCurrentA * 1.25) / 5) * 5; // e.g. 16A, 20A, 25A, 32A, 40A, 63A
+  const breakerRatingA = cb?.acBreakerRatingA || calculatedBreakerA;
+  const breakerPoles = cb?.acBreakerPoles || (is3Phase ? '3P' : '2P');
 
   const downloadSvg = () => {
     if (!svgRef.current) return;
@@ -178,7 +181,7 @@ export const SingleLineDiagram: React.FC<SingleLineDiagramProps> = ({ project, i
                 <text x="245" y={startY + 28} fill="#ef4444" fontSize="8" fontWeight="bold">DC (+)</text>
                 <text x="245" y={startY + 78} fill="#3b82f6" fontSize="8" fontWeight="bold">DC (-)</text>
                 <text x="245" y={startY + 52} fill={isPrintMode ? '#64748b' : '#94a3b8'} fontSize="7.5" textAnchor="middle">
-                  1x4.0 mm²
+                  {cb?.dcCableSizeMm2 || '1x4.0 mm²'}
                 </text>
               </g>
             );
@@ -206,12 +209,16 @@ export const SingleLineDiagram: React.FC<SingleLineDiagramProps> = ({ project, i
           <g transform="translate(290, 115)">
             <rect x="0" y="0" width="30" height="14" fill="#334155" stroke="#f59e0b" rx="2" />
             <text x="15" y="10" fill="#fff" fontSize="8" textAnchor="middle">FUSE</text>
-            <text x="35" y="11" fill={isPrintMode ? '#334155' : '#cbd5e1'} fontSize="8">15A gPV</text>
+            <text x="35" y="11" fill={isPrintMode ? '#334155' : '#cbd5e1'} fontSize="8">
+              {cb?.dcFuseRatingA || 15}A gPV
+            </text>
           </g>
           <g transform="translate(290, 140)">
             <rect x="0" y="0" width="30" height="14" fill="#334155" stroke="#f59e0b" rx="2" />
             <text x="15" y="10" fill="#fff" fontSize="8" textAnchor="middle">FUSE</text>
-            <text x="35" y="11" fill={isPrintMode ? '#334155' : '#cbd5e1'} fontSize="8">15A gPV</text>
+            <text x="35" y="11" fill={isPrintMode ? '#334155' : '#cbd5e1'} fontSize="8">
+              {cb?.dcFuseRatingA || 15}A gPV
+            </text>
           </g>
 
           {/* DC Isolator */}
@@ -219,15 +226,17 @@ export const SingleLineDiagram: React.FC<SingleLineDiagramProps> = ({ project, i
             <circle cx="15" cy="15" r="14" fill="#0f172a" stroke="#ef4444" strokeWidth="1.5" />
             <line x1="8" y1="22" x2="22" y2="8" stroke="#ef4444" strokeWidth="2" />
             <text x="40" y="14" fill={isPrintMode ? '#0f172a' : '#fff'} fontSize="9" fontWeight="bold">DC ISOLATOR</text>
-            <text x="40" y="26" fill={isPrintMode ? '#475569' : '#94a3b8'} fontSize="8">32A 1000V DC-PV2</text>
+            <text x="40" y="26" fill={isPrintMode ? '#475569' : '#94a3b8'} fontSize="8">
+              {cb?.dcIsolatorRatingA || 32}A {cb?.dcIsolatorVoltageV || 1000}V DC-PV2
+            </text>
           </g>
 
           {/* DC SPD */}
           <g transform="translate(290, 240)">
             <rect x="0" y="0" width="45" height="24" fill="#334155" stroke="#10b981" rx="2" />
-            <text x="22" y="11" fill="#fff" fontSize="8" textAnchor="middle">SPD Type 2</text>
-            <text x="22" y="20" fill="#10b981" fontSize="7" textAnchor="middle">In 20kA</text>
-            <text x="55" y="16" fill={isPrintMode ? '#475569' : '#94a3b8'} fontSize="8">Up ≤ 1.5kV</text>
+            <text x="22" y="11" fill="#fff" fontSize="8" textAnchor="middle">{cb?.dcSpdType || 'SPD Type 2'}</text>
+            <text x="22" y="20" fill="#10b981" fontSize="7" textAnchor="middle">In {cb?.dcSpdInKa || 20}kA</text>
+            <text x="55" y="16" fill={isPrintMode ? '#475569' : '#94a3b8'} fontSize="8">Up ≤ {cb?.dcSpdUpKv || 1.5}kV</text>
           </g>
 
           {/* Ground to Earth Bar */}
@@ -310,7 +319,7 @@ export const SingleLineDiagram: React.FC<SingleLineDiagramProps> = ({ project, i
             {is3Phase ? '3P+N+PE' : '1P+N+PE'}
           </text>
           <text x="680" y="196" fill={isPrintMode ? '#475569' : '#94a3b8'} fontSize="8" textAnchor="middle">
-            Cu {is3Phase ? '4x6.0' : '3x6.0'} mm²
+            Cu {cb?.acCableSpec || (is3Phase ? '4x6.0 mm²' : '3x6.0 mm²')}
           </text>
 
           {/* -------------------------------------------------------- */}
@@ -334,12 +343,12 @@ export const SingleLineDiagram: React.FC<SingleLineDiagramProps> = ({ project, i
           {/* AC Circuit Breaker */}
           <g transform="translate(730, 115)">
             <rect x="0" y="0" width="36" height="30" fill="#0f172a" stroke="#ec4899" rx="3" />
-            <text x="18" y="14" fill="#fff" fontSize="8" textAnchor="middle">MCB</text>
+            <text x="18" y="14" fill="#fff" fontSize="8" textAnchor="middle">{cb?.acBreakerType || 'MCB'}</text>
             <text x="18" y="24" fill="#ec4899" fontSize="8" fontWeight="bold" textAnchor="middle">
               {breakerRatingA}A
             </text>
             <text x="44" y="18" fill={isPrintMode ? '#0f172a' : '#fff'} fontSize="8.5">
-              {is3Phase ? '3P 10kA' : '2P 10kA'}
+              {breakerPoles} 10kA
             </text>
           </g>
 
@@ -347,16 +356,16 @@ export const SingleLineDiagram: React.FC<SingleLineDiagramProps> = ({ project, i
           <g transform="translate(730, 160)">
             <rect x="0" y="0" width="36" height="24" fill="#0f172a" stroke="#38bdf8" rx="3" />
             <text x="18" y="12" fill="#fff" fontSize="7.5" textAnchor="middle">RCBO</text>
-            <text x="18" y="20" fill="#38bdf8" fontSize="7" textAnchor="middle">30mA</text>
+            <text x="18" y="20" fill="#38bdf8" fontSize="7" textAnchor="middle">{cb?.acRcboRatingMa || 30}mA</text>
             <text x="44" y="16" fill={isPrintMode ? '#475569' : '#94a3b8'} fontSize="8">Type A</text>
           </g>
 
           {/* AC SPD */}
           <g transform="translate(730, 205)">
             <rect x="0" y="0" width="36" height="24" fill="#0f172a" stroke="#10b981" rx="3" />
-            <text x="18" y="12" fill="#fff" fontSize="7.5" textAnchor="middle">AC SPD</text>
-            <text x="18" y="20" fill="#10b981" fontSize="7" textAnchor="middle">Type 2</text>
-            <text x="44" y="16" fill={isPrintMode ? '#475569' : '#94a3b8'} fontSize="8">Uc 385V</text>
+            <text x="18" y="12" fill="#fff" fontSize="7.5" textAnchor="middle">{cb?.acSpdType || 'AC SPD'}</text>
+            <text x="18" y="20" fill="#10b981" fontSize="7" textAnchor="middle">In {cb?.acSpdInKa || 20}kA</text>
+            <text x="44" y="16" fill={isPrintMode ? '#475569' : '#94a3b8'} fontSize="8">Uc {cb?.acSpdUcV || 385}V</text>
           </g>
 
           {/* -------------------------------------------------------- */}
@@ -387,10 +396,10 @@ export const SingleLineDiagram: React.FC<SingleLineDiagramProps> = ({ project, i
           <g transform="translate(730, 395)">
             <rect x="0" y="0" width="100" height="42" fill="#0f172a" stroke="#a855f7" strokeWidth="1.5" rx="4" />
             <text x="50" y="16" fill="#c084fc" fontSize="8.5" fontWeight="bold" textAnchor="middle">
-              SMART METER
+              {cb?.zeroExportMeterModel ? cb.zeroExportMeterModel.split(' ')[0] : 'SMART METER'}
             </text>
-            <text x="50" y="28" fill="#94a3b8" fontSize="7.5" textAnchor="middle">
-              Zero Export CT Sensor
+            <text x="50" y="28" fill="#94a3b8" fontSize="7" textAnchor="middle">
+              {cb?.zeroExportMeterModel ? cb.zeroExportMeterModel.slice(0, 22) : 'Zero Export CT Sensor'}
             </text>
             <circle cx="95" cy="21" r="5" fill="#a855f7" />
           </g>
@@ -483,13 +492,13 @@ export const SingleLineDiagram: React.FC<SingleLineDiagramProps> = ({ project, i
               Inverter: <tspan fill={isPrintMode ? '#0f172a' : '#fff'}>{inv.brand} {inv.model.slice(0, 25)} ({inv.ratedPowerKw}kW)</tspan>
             </text>
             <text x="335" y="105" fill={isPrintMode ? '#475569' : '#94a3b8'} fontSize="9">
-              DC Surge: Type 2, In 20kA, Imax 40kA 1000V DC
+              DC Surge: {cb?.dcSpdType || 'Type 2'}, In {cb?.dcSpdInKa || 20}kA, Imax {cb?.dcSpdImaxKa || 40}kA {cb?.dcIsolatorVoltageV || 1000}V DC
             </text>
             <text x="335" y="125" fill={isPrintMode ? '#475569' : '#94a3b8'} fontSize="9">
-              AC Breaker: {breakerRatingA}A {is3Phase ? '3P' : '2P'} 10kA (RCBO 30mA)
+              AC Breaker: {cb?.acBreakerType || 'MCB'} {breakerRatingA}A {breakerPoles} 10kA (RCBO {cb?.acRcboRatingMa || 30}mA)
             </text>
             <text x="335" y="145" fill={isPrintMode ? '#475569' : '#94a3b8'} fontSize="9">
-              Zero Export: Smart Meter DTSU666 with External CTs
+              Zero Export: {cb?.zeroExportMeterModel || 'Smart Meter DTSU666 with External CTs'}
             </text>
 
             {/* Col 3: Engineering Signatures & Approval */}
