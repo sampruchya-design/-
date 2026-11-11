@@ -1,0 +1,8 @@
+{
+  "name": "SolarPro Studio 3D & Proposal Suite",
+  "description": "ระบบออกแบบเขียนแบบวิศวกรรมโซลาร์เซลล์ 2D/3D, 3D Shading Simulation สไตล์ PVsyst, Single Line Diagram อัตโนมัติ และเอกสารข้อเสนอโครงการ (Proposal) ระดับมืออาชีพ",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
